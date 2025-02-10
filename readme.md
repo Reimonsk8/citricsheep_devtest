@@ -14,8 +14,19 @@ Every morning the elevator is called to the first floor and at the end of the da
 
 # Instructions to run the project:
 
-- Run Pytest to begin to ensure nothing is broken
-- Run main.py to start hosting db with flask on localhost:5000 (if option generate_random_test_data=true Database will be filled with random use case data) 
+### 1. Run Tests ensure the project is functioning correctly
+```bash
+pytest
+```
+### 2. host the database on localhost:5000. Set generate_random_test_data=True in the main.py file to populate the database with random use-case data.
+```bash
+
+python main.py
+```
+### 3. Extract important features, generate a DataFrame, and create visualizations based on the current data.
+```bash
+python ./utils/process_data_features.py
+```
 
 ## Elevators
 When an elevator is empty and not moving this is known as it's resting floor. 
