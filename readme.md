@@ -1,5 +1,22 @@
 # Dev Test
 
+# Description of my approach and constrains:
+
+due the lack of real data, i'm gonna assume that each row in the elevator_demand table represents a call to the elevator, 
+and each row in the elevator_state table represents the elevator's state at after the call.
+
+In this scenario, I'll imagine a real-world situation where an elevator operates in a building with 1 to 13 floors. 
+The elevator is called to a random floor and then travels to another random floor, taking approximately 3 seconds per floor. 
+The simulation will span around 45 days. 
+I'll also incorporate business rules: one of the floors (floor 6) is broken, so the elevator cannot stop there. 
+Additionally, the building operates from 8:00 AM to 6:00 PM on weekdays only, meaning the elevator won't be called outside this time frame or during weekends.
+Every morning the elevator is called to the first floor and at the end of the day it returns to the first floor.
+
+# Instructions to run the project:
+
+- Run Pytest to begin to ensure nothing is broken
+- Run main.py to start hosting db with flask on localhost:5000 (if option generate_random_test_data=true Database will be filled with random use case data) 
+
 ## Elevators
 When an elevator is empty and not moving this is known as it's resting floor. 
 The ideal resting floor to be positioned on depends on the likely next floor that the elevator will be called from.
