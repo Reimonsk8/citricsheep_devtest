@@ -28,6 +28,22 @@ python main.py
 python ./utils/process_data_features.py
 ```
 
+At this point, after analyzing the data, I see there are two approaches I can take to predict the next floor where the elevator will be called:
+
+Approach 1: Based on how often the same input (time_stamp, floor_state) is used for frequent travel, I can predict the output (floor_demand) where the elevator was originally called from. This way, I can position the elevator closer to that floor.
+
+Approach 2: If I order the table historically, I can observe that there is always a previous travel before an elevator demand and state. I can store this in the table and create a relationship where the input consists of the previous travel (time_stamp, previous_demand, previous_state), and the output is the next travel (time_stamp, floor_demand, floor_state).
+
+I would like to implement both approaches and compare the results to make a decision based on the findings.
+
+
+
+
+
+
+
+
+
 ## Elevators
 When an elevator is empty and not moving this is known as it's resting floor. 
 The ideal resting floor to be positioned on depends on the likely next floor that the elevator will be called from.
