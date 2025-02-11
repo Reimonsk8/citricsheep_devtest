@@ -1,11 +1,5 @@
 import pandas as pd
 from pandas.plotting import table
-from sklearn.model_selection import train_test_split
-from sklearn.metrics import confusion_matrix, accuracy_score
-from sklearn.preprocessing import OneHotEncoder
-from sklearn.linear_model import LogisticRegression
-from sklearn.linear_model import LinearRegression
-import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
 import requests
@@ -244,9 +238,25 @@ plt_weekly_hour_heat_map()
 plot_idle_hours()
 seconds_traveled_distribution()
 
+'''
+At this point, after analyzing the data, I see there are two approaches I can take to predict the next floor where the elevator will be called:
 
-#data engeiring for training we dont need data where elevator is occupied remove 'vacant' = false data from dta frame = df_merged
+Approach 1 (t,x = y) Frequency-Based Demand Prediction: 
+Based on how often the same input (time_stamp, floor_state) is used for frequent travel, I can predict the output (floor_demand) where the elevator was originally called from. This way, I can position the elevator closer to that floor.
 
+Approach 2(pt, px, py = t,x,y) Time-Sequential Demand Prediction: 
+If I order the table historically, I can observe that there is always a previous travel before an elevator demand and state. I can store this in the table and create a relationship where the input consists of the previous travel (time_stamp, previous_demand, previous_state), and the output is the next travel (time_stamp, floor_demand, floor_state).
+
+I would like to implement both approaches and compare the results to make a decision based on the findings.
+
+'''
+
+#################################################
+# Feature engineering, prepare data for training
+#################################################
+
+
+#no need for data where elevator is occupied remove 'vacant' = false data from data frame = df_merged
 def plot_remove_occupied():
     df_cleaned = df_merged[df_merged['vacant'] != False]
     plt.figure(figsize=(12, 6))
@@ -283,20 +293,6 @@ def plot_balanced_distribution():
 balanced_data = plot_balanced_distribution()
 
 
-
-
-'''
-At this point, after analyzing the data, I see there are two approaches I can take to predict the next floor where the elevator will be called:
-
-Approach 1 (t,x = y) Frequency-Based Demand Prediction: 
-Based on how often the same input (time_stamp, floor_state) is used for frequent travel, I can predict the output (floor_demand) where the elevator was originally called from. This way, I can position the elevator closer to that floor.
-
-Approach 2(pt, px, py = t,x,y) Time-Sequential Demand Prediction: 
-If I order the table historically, I can observe that there is always a previous travel before an elevator demand and state. I can store this in the table and create a relationship where the input consists of the previous travel (time_stamp, previous_demand, previous_state), and the output is the next travel (time_stamp, floor_demand, floor_state).
-
-I would like to implement both approaches and compare the results to make a decision based on the findings.
-
-'''
 # Remove unnecessary columns
 columns_to_drop = ['id', 'timestamp_demand', 'timestamp_state', 'vacant', 'idle_hours', 'seconds_traveled', 'direction_traveled']
 balanced_data.drop(columns_to_drop, axis=1, inplace=True, errors='ignore')  # Handle potential missing columns
@@ -312,8 +308,11 @@ for column in columns_to_encode:
 df_encoded = pd.concat(encoded_dfs, axis=1)
 
 df_with_original = pd.concat([balanced_data, df_encoded], axis=1) # Keep original columns (if needed)
-df_final = df_encoded # only keep the encode  columns (if you don't need the originals)
+df_final = df_encoded # only keep the encode  columns
 
+
+#THIS csv files should be PUT on the SQL database need to create the table and the api requests to CRUD the data but need more time least priority now
 balanced_data.to_csv("../analytics/raw_balanced_elevator_data.csv", index=False)
 df_with_original.to_csv("../analytics/original_encoded_elevator_data.csv", index=False)
 df_with_original.to_csv("../analytics/only_encoded_elevator_data.csv", index=False)
+

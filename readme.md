@@ -1,3 +1,7 @@
+# Notes 
+
+Due to the short time frame of only 4 hours, I couldn't complete the one-hot encoding properly for the linear regression models. If more time had been given, I would have been able to finish it, and I'm confident I could have done it successfully. After that, I would have evaluated the performance of different machine learning models and selected the best one. Then, I would have fine-tuned the parameters to achieve the best results. Additionally, I would have needed to generate more data to train the models effectively. With a good prediction model in place, I would have developed a full-service API to deliver predictions in real time.
+
 # Dev Test Description of my approach and constrains:
 
 due the lack of real data, i'm gonna assume that each row in the elevator_demand table represents a call to the elevator, 
@@ -11,6 +15,7 @@ Additionally, the building operates from 8:00 AM to 6:00 PM on weekdays only, me
 Every morning the elevator is called to the first floor and at the end of the day it returns to the first floor.
 
 # Instructions to run the project:
+From the project folder:
 
 ### 1. Run Tests ensure the project is functioning correctly
 ```bash
@@ -21,13 +26,20 @@ pytest
 
 python main.py
 ```
-### 3. Extract important features, generate a DataFrame, and create visualizations based on the current data.
+### 3. Extract important features, generate a DataFrame, and create visualizations based on the current data, these will be saved in the analytics folder.
 ```bash
 python ./utils/process_data_features.py
 ```
 
+### 4. Run the models with the extracted data to train and generate predictions.
+```bash
+python ./utils/train_model_frequency_based.py
+python ./utils/train_model_time_sequential.py
+```
+
+
 # Descision making:
-At this point, after analyzing the data, I see there are two approaches I can take to predict the next floor where the elevator will be called:
+after analyzing the data, I see there are two approaches I can take to predict the next floor where the elevator will be called:
 
 ### Approach 1 (t,x = y) Frequency-Based Demand Prediction: 
 Based on how often the same input (time_stamp, floor_state) is used for frequent travel, I can predict the output (floor_demand) where the elevator was originally called from. This way, I can position the elevator closer to that floor.
