@@ -223,7 +223,7 @@ def plt_weekly_hour_heat_map():
     save_plot("weekly_hour_heat_map_calls.png")
     plt.show()
 
-    
+
 # Violin Plot (Horizontal) 
 def seconds_traveled_distribution():   
 
@@ -246,10 +246,9 @@ seconds_traveled_distribution()
 
 
 #data engeiring for training we dont need data where elevator is occupied remove 'vacant' = false data from dta frame = df_merged
-df_cleaned = df_merged
+
 def plot_remove_occupied():
     df_cleaned = df_merged[df_merged['vacant'] != False]
-    
     plt.figure(figsize=(12, 6))
     sns.countplot(data=df_merged, x='floor_state', color='blue', label='Before Removing Vacant=False', alpha=0.6)   
     sns.countplot(data=df_cleaned, x='floor_state', color='orange', label='After Removing Vacant=False', alpha=0.6)
@@ -260,11 +259,10 @@ def plot_remove_occupied():
     
     # Save and show the plot
     save_plot("remove_occupied_comparison.png")
-    plt.show()
-    
-plot_remove_occupied()
+    return df_cleaned
+df_cleaned = plot_remove_occupied()
 
-balanced_data = df_cleaned
+global balanced_data
 #balance data with more frequency to cap to the lowest frequency per call
 def plot_balanced_distribution(): 
     # Balance the dataset by downsampling
@@ -281,10 +279,8 @@ def plot_balanced_distribution():
     
     # Save and show the plot
     save_plot("floor_state_balanced_comparison.png")
-    plt.show()
-
-# Call the function
-plot_balanced_distribution()
+    return balanced_data
+balanced_data = plot_balanced_distribution()
 
 
 
@@ -301,5 +297,23 @@ If I order the table historically, I can observe that there is always a previous
 I would like to implement both approaches and compare the results to make a decision based on the findings.
 
 '''
+# Remove unnecessary columns
+columns_to_drop = ['id', 'timestamp_demand', 'timestamp_state', 'vacant', 'idle_hours', 'seconds_traveled', 'direction_traveled']
+balanced_data.drop(columns_to_drop, axis=1, inplace=True, errors='ignore')  # Handle potential missing columns
 
+# Encode categorical columns
+columns_to_encode = ['floor_call', 'floor_state', 'previous_floor_call', 'previous_floor_state', 'hour_of_day', 'day_of_week']
+encoded_dfs = [] 
 
+for column in columns_to_encode:
+    encoded_column = pd.get_dummies(balanced_data[column], prefix=column, prefix_sep='_', dummy_na=False)
+    encoded_dfs.append(encoded_column)
+
+df_encoded = pd.concat(encoded_dfs, axis=1)
+
+df_with_original = pd.concat([balanced_data, df_encoded], axis=1) # Keep original columns (if needed)
+df_final = df_encoded # only keep the encode  columns (if you don't need the originals)
+
+balanced_data.to_csv("../analytics/raw_balanced_elevator_data.csv", index=False)
+df_with_original.to_csv("../analytics/original_encoded_elevator_data.csv", index=False)
+df_with_original.to_csv("../analytics/only_encoded_elevator_data.csv", index=False)

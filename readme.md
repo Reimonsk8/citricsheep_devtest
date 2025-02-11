@@ -1,6 +1,4 @@
-# Dev Test
-
-# Description of my approach and constrains:
+# Dev Test Description of my approach and constrains:
 
 due the lack of real data, i'm gonna assume that each row in the elevator_demand table represents a call to the elevator, 
 and each row in the elevator_state table represents the elevator's state at after the call.
@@ -28,13 +26,16 @@ python main.py
 python ./utils/process_data_features.py
 ```
 
+# Descision making:
 At this point, after analyzing the data, I see there are two approaches I can take to predict the next floor where the elevator will be called:
 
-Approach 1: Based on how often the same input (time_stamp, floor_state) is used for frequent travel, I can predict the output (floor_demand) where the elevator was originally called from. This way, I can position the elevator closer to that floor.
+### Approach 1 (t,x = y) Frequency-Based Demand Prediction: 
+Based on how often the same input (time_stamp, floor_state) is used for frequent travel, I can predict the output (floor_demand) where the elevator was originally called from. This way, I can position the elevator closer to that floor.
 
-Approach 2: If I order the table historically, I can observe that there is always a previous travel before an elevator demand and state. I can store this in the table and create a relationship where the input consists of the previous travel (time_stamp, previous_demand, previous_state), and the output is the next travel (time_stamp, floor_demand, floor_state).
+### Approach 2 (pt, px, py = t,x,y) Time-Sequential Demand Prediction: 
+If I order the table historically, I can observe that there is always a previous travel before an elevator demand and state. I can store this in the table and create a relationship where the input consists of the previous travel (time_stamp, previous_demand, previous_state), and the output is the next travel (time_stamp, floor_demand, floor_state).
 
-I would like to implement both approaches and compare the results to make a decision based on the findings.
+I would like to implement both approaches for the final decision-making process, aiming to minimize the travel time of the elevator prediction.
 
 
 
